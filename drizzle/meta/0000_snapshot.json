@@ -1,0 +1,141 @@
+{
+  "id": "61d58f2f-c809-4875-b6d1-696480420d84",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.instruments": {
+      "name": "instruments",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "symbol": {
+          "name": "symbol",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "instrument_type": {
+          "name": "instrument_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "timezone": {
+          "name": "timezone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "exchange_timezone_name": {
+          "name": "exchange_timezone_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "long_name": {
+          "name": "long_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "short_name": {
+          "name": "short_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "exchange_name": {
+          "name": "exchange_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "full_exchange_name": {
+          "name": "full_exchange_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "first_trade_date": {
+          "name": "first_trade_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "has_pre_post_market_data": {
+          "name": "has_pre_post_market_data",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pre_market_start": {
+          "name": "pre_market_start",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pre_market_end": {
+          "name": "pre_market_end",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "regular_market_start": {
+          "name": "regular_market_start",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "regular_market_end": {
+          "name": "regular_market_end",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "post_market_start": {
+          "name": "post_market_start",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "post_market_end": {
+          "name": "post_market_end",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

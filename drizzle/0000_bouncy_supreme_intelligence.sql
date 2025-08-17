@@ -1,0 +1,20 @@
+CREATE TABLE "instruments" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"symbol" text NOT NULL,
+	"instrument_type" text NOT NULL,
+	"currency" text NOT NULL,
+	"timezone" text NOT NULL,
+	"exchange_timezone_name" text NOT NULL,
+	"long_name" text NOT NULL,
+	"short_name" text NOT NULL,
+	"exchange_name" text NOT NULL,
+	"full_exchange_name" text NOT NULL,
+	"first_trade_date" timestamp NOT NULL,
+	"has_pre_post_market_data" boolean NOT NULL,
+	"pre_market_start" timestamp,
+	"pre_market_end" timestamp,
+	"regular_market_start" timestamp,
+	"regular_market_end" timestamp,
+	"post_market_start" timestamp,
+	"post_market_end" timestamp
+);
