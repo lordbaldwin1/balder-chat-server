@@ -1,8 +1,11 @@
 # fin-fortune
 
 ## TODO
-- [] Extract out calculations into unit testable functions
-- [] finish fortune computations and prompt building
+- [x] Extract out calculations into unit testable functions
+- [] Write unit tests for daily calculations
+- [] Finish computations/prompts for weekly/monthly data
+- [] Add unit tests for weekly/monthly data
+- [] Add cron jobs to gather data daily, weekly, and monthly!
 - [] add handler for fortune generation w/ gemini api
 - [] make frontend
 - [] profit?
