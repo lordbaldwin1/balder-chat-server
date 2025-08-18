@@ -1,5 +1,11 @@
 # fin-fortune
 
+## TODO
+- [] finish fortune computations and prompt building
+- [] add handler for fortune generation w/ gemini api
+- [] make frontend
+- [] profit?
+
 To install dependencies:
 
 ```bash

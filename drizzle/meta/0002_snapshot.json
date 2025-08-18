@@ -1,6 +1,6 @@
 {
-  "id": "f9b0d7ad-7867-47e4-b7cc-cdfa4db5084f",
-  "prevId": "51ec3eee-10b0-4bff-860e-5ede1cff3b9e",
+  "id": "c1a324bd-1b66-4d54-9369-9e943175c55d",
+  "prevId": "f9b0d7ad-7867-47e4-b7cc-cdfa4db5084f",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -206,7 +206,7 @@
         },
         "volume": {
           "name": "volume",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
@@ -294,7 +294,7 @@
         },
         "volume": {
           "name": "volume",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
@@ -382,7 +382,7 @@
         },
         "volume": {
           "name": "volume",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
