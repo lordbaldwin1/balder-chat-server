@@ -11,4 +11,4 @@ const data = await yahooFinance.chart("AAPL", {
   interval: "1d",
 });
 
-console.log(data);
+console.log(data.quotes[0]);

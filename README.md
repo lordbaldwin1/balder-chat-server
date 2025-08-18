@@ -1,6 +1,7 @@
 # fin-fortune
 
 ## TODO
+- [] Extract out calculations into unit testable functions
 - [] finish fortune computations and prompt building
 - [] add handler for fortune generation w/ gemini api
 - [] make frontend
