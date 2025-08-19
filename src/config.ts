@@ -3,6 +3,7 @@ type Config = {
   port: string;
   platform: string;
   dbURL: string;
+  geminiAPIKey: string;
 }
 
 export const config: Config = {
@@ -10,6 +11,7 @@ export const config: Config = {
   port: envOrThrow("PORT"),
   platform: envOrThrow("PLATFORM"),
   dbURL: envOrThrow("DATABASE_URL"),
+  geminiAPIKey: envOrThrow("GEMINI_API_KEY"),
 }
 
 function envOrThrow(key: string) {

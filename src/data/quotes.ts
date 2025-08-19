@@ -16,7 +16,7 @@ export async function gatherPastYearStockPricesDailyWeeklyMonthly() {
       console.error(`Error: ${err.message}`);
       return;
     }
-    console.error("LOL! UNKNOWN ERROR OCCURRED!");
+    console.error("LOL! UNKNOWN ERROR OCCURRED WHILE GATHERING QUOTES!");
     return;
   }
 }
@@ -131,5 +131,3 @@ async function getMonthlyStockPricesPastYear() {
     }
   }
 }
-
-await gatherPastYearStockPricesDailyWeeklyMonthly();

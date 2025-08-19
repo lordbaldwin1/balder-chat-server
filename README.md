@@ -2,10 +2,12 @@
 
 ## TODO
 - [x] Extract out calculations into unit testable functions
-- [ ] Write unit tests for daily calculations
-- [ ] Finish computations/prompts for weekly/monthly data
-- [ ] Add unit tests for weekly/monthly data
-- [ ] Add cron jobs to gather data daily, weekly, and monthly!
+- [x] Write unit tests for daily calculations
+- [x] Finish computations/prompts for weekly/monthly data
+- [x] Add unit tests for weekly/monthly data
+- [x] Add cron jobs to gather data daily, weekly, and monthly!
+- [x] Add global prompt state, initialize, and update on cron job
+- [ ] Add auth
 - [ ] add handler for fortune generation w/ gemini api
 - [ ] make frontend
 - [ ] profit?

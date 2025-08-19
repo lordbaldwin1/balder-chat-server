@@ -33,15 +33,14 @@ export type DailyMetrics = {
 export async function createFortunePrompt(symbol: string) {
   const dailyMetrics = await calculateDailyMetrics(symbol);
   const dailyPrompt = formatDailyPrompt(dailyMetrics);
-  console.log(dailyPrompt);
 
   const weeklyMetrics = await calculateWeeklyMetrics(symbol);
   const weeklyPrompt = formatWeeklyPrompt(weeklyMetrics);
-  console.log(weeklyPrompt);
 
   const monthlyMetrics = await calculateMonthlyMetrics(symbol);
   const monthlyPrompt = formatMonthlyPrompt(monthlyMetrics);
-  console.log(monthlyPrompt);
+
+  return dailyPrompt + weeklyPrompt + monthlyPrompt;
 }
 
 async function calculateDailyMetrics(symbol: string) {
@@ -107,8 +106,14 @@ async function calculateMonthlyMetrics(symbol: string) {
   const fiftyTwoWeekHigh = metaData?.fiftyTwoWeekHigh;
   const fiftyTwoWeekLow = metaData?.fiftyTwoWeekLow;
 
-  const monthlyCloseChangePercent = calcMonthlyCloseChangePercent(thisMonthClose, lastMonthClose);
-  const highVs52WeekHigh = calcHighVs52WeekHigh(thisMonthClose, fiftyTwoWeekHigh);
+  const monthlyCloseChangePercent = calcMonthlyCloseChangePercent(
+    thisMonthClose,
+    lastMonthClose
+  );
+  const highVs52WeekHigh = calcHighVs52WeekHigh(
+    thisMonthClose,
+    fiftyTwoWeekHigh
+  );
   const lowVs52WeekLow = calcLowVs52WeekLow(thisMonthClose, fiftyTwoWeekLow);
 
   return {

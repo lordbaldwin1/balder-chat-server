@@ -85,7 +85,15 @@ export function calcWeeklyVolumeVs12WeekAverage(
 ) {
   if (weeklyQuotes.length < 2) return undefined;
   
-  const lastWeekVolume = weeklyQuotes[1]?.volume;
+  let lastWeekVolume: number | undefined;
+  for (let i = 1; i < weeklyQuotes.length; i++) {
+    const volume = weeklyQuotes[i]?.volume;
+    if (volume !== null && volume !== undefined) {
+      lastWeekVolume = volume;
+      break;
+    }
+  }
+  
   if (!lastWeekVolume) return undefined;
   
   let sumVolume = 0;
