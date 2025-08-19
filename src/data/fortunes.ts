@@ -1,7 +1,21 @@
 import { getStockPricesDaily } from "../db/queries/daily-prices";
-import type { StockPricesDaily } from "../db/schema";
+import { getStockPricesWeekly } from "../db/queries/weekly-prices";
+import { type StockPricesDaily, type StockPricesWeekly } from "../db/schema";
+import {
+  calcDailyCloseChangePercent,
+  calcDailyCloseVolatility,
+  calcIntradayRange,
+  calcOpenCloseChangePercent,
+  calcTodayAverageVs30DayAverage,
+  calcWeeklyCloseChangePercent,
+  calcWeeklyCloseStreak,
+  calcWeeklyVolatility,
+  calcWeeklyVolumeVs12WeekAverage,
+  formatDailyPrompt,
+  formatWeeklyPrompt,
+} from "./calculations";
 
-type DailyMetrics = {
+export type DailyMetrics = {
   symbol: string;
   dailyCloseChangePercent: number | undefined;
   openCloseChangePercent: number | undefined;
@@ -14,6 +28,10 @@ export async function createFortunePrompt(symbol: string) {
   const dailyMetrics = await calculateDailyMetrics(symbol);
   const dailyPrompt = formatDailyPrompt(dailyMetrics);
   console.log(dailyPrompt);
+
+  const weeklyMetrics = await calculateWeeklyMetrics(symbol);
+  const weeklyPrompt = formatWeeklyPrompt(weeklyMetrics);
+  console.log(weeklyPrompt);
 }
 
 async function calculateDailyMetrics(symbol: string) {
@@ -47,79 +65,26 @@ async function calculateDailyMetrics(symbol: string) {
   } satisfies DailyMetrics;
 }
 
-function calcDailyCloseChangePercent(
-  todaysClose: number | null | undefined,
-  yesterdaysClose: number | null | undefined
-) {
-  return todaysClose && yesterdaysClose
-    ? ((todaysClose - yesterdaysClose) / yesterdaysClose) * 100
-    : undefined;
-}
+async function calculateWeeklyMetrics(symbol: string) {
+  const weeklyQuotes = await getStockPricesWeekly(symbol);
 
-function calcOpenCloseChangePercent(
-  todaysOpen: number | null | undefined,
-  todaysClose: number | null | undefined
-) {
-  return todaysClose && todaysOpen
-    ? ((todaysClose - todaysOpen) / todaysOpen) * 100
-    : undefined;
-}
+  const thisWeekClose = weeklyQuotes[0]?.close;
+  const lastWeekClose = weeklyQuotes[1]?.close;
 
-function calcDailyCloseVolatility(dailyQuotes: StockPricesDaily[]) {
-  let sumCloseChangePercent = 0;
-  let count = 0;
+  const weeklyCloseChangePercent = calcWeeklyCloseChangePercent(
+    thisWeekClose,
+    lastWeekClose
+  );
+  const weeklyCloseStreak = calcWeeklyCloseStreak(weeklyQuotes);
+  const weeklyVolatility = calcWeeklyVolatility(weeklyQuotes);
+  const weeklyVolumeVs12WeekAverage = calcWeeklyVolumeVs12WeekAverage(weeklyQuotes);
 
-  for (let i = 0; i < dailyQuotes.length - 1; i++) {
-    const recentClose = dailyQuotes[i]?.close;
-    const pastClose = dailyQuotes[i + 1]?.close;
-    if (!recentClose || !pastClose) {
-      continue;
-    }
-
-    sumCloseChangePercent += Math.abs(
-      ((recentClose - pastClose) / pastClose) * 100
-    );
-    count++;
+  return {
+    weeklyCloseChangePercent: weeklyCloseChangePercent,
+    weeklyCloseStreak: weeklyCloseStreak,
+    weeklyVolatility: weeklyVolatility,
+    weeklyVolumeVs12WeekAverage: weeklyVolumeVs12WeekAverage,
   }
-
-  return sumCloseChangePercent / count;
-}
-
-function calcIntradayRange(
-  todayHigh: number | null | undefined,
-  todayLow: number | null | undefined
-) {
-  return todayHigh && todayLow
-    ? ((todayHigh - todayLow) / todayLow) * 100
-    : undefined;
-}
-
-function calcTodayAverageVs30DayAverage(dailyQuotes: StockPricesDaily[]) {
-  let sumVolume = 0;
-  let sumCount = 0;
-  for (let i = 0; i < Math.min(dailyQuotes.length, 30); i++) {
-    const dayVolume = dailyQuotes[i]?.volume;
-    if (!dayVolume) {
-      continue;
-    }
-    sumVolume += dayVolume;
-    sumCount++;
-  }
-  const avg30DayVolume = sumCount > 0 ? sumVolume / sumCount : undefined;
-  return dailyQuotes[0]?.volume && avg30DayVolume
-    ? dailyQuotes[0]?.volume / avg30DayVolume
-    : undefined;
-}
-
-function formatDailyPrompt(d: DailyMetrics) {
-  return `
-  Symbol: ${d.symbol}
-  Daily % change: ${d.dailyCloseChangePercent?.toFixed(2)}%
-  Open/close % change: ${d.openCloseChangePercent?.toFixed(2)}%
-  Average daily % change (volatility): ${d.closeVolatilityPercent?.toFixed(2)}%
-  Intraday Range: ${d.intradayRange?.toFixed(2)}%
-  Today Volume / 30 day average volume: ${d.todayVolumeVsAverage?.toFixed(2)}x
-  `;
 }
 
 await createFortunePrompt("AAPL");
