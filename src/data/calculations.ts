@@ -179,3 +179,36 @@ export function formatWeeklyPrompt(weeklyMetrics: {
     Volume vs 12-Week Average: ${weeklyMetrics.weeklyVolumeVs12WeekAverage?.toFixed(2)}x
   `;
 }
+
+export function calcMonthlyCloseChangePercent(
+    thisMonthClose: number | null | undefined,
+    lastMonthClose: number | null | undefined
+  ) {
+    return thisMonthClose && lastMonthClose
+      ? Math.round((thisMonthClose - lastMonthClose) / lastMonthClose * 100 * 100) / 100
+      : undefined;
+  }
+  
+  export function calcHighVs52WeekHigh(currentClose: number | null | undefined, fiftyTwoWeekHighClose: number | null | undefined) {
+    return currentClose && fiftyTwoWeekHighClose
+      ? Math.round((currentClose - fiftyTwoWeekHighClose) / fiftyTwoWeekHighClose * 100 * 100) / 100
+      : undefined;
+  }
+  
+  export function calcLowVs52WeekLow(currentClose: number | null | undefined, fiftyTwoWeekLowClose: number | null | undefined) {
+    return currentClose && fiftyTwoWeekLowClose
+      ? Math.round((currentClose - fiftyTwoWeekLowClose) / fiftyTwoWeekLowClose * 100 * 100) / 100
+      : undefined;
+  }
+
+export function formatMonthlyPrompt(monthlyMetrics: {
+  monthlyCloseChangePercent: number | undefined;
+  highVs52WeekHigh: number | undefined;
+  lowVs52WeekLow: number | undefined;
+}) {
+  return `
+    Monthly Close Change: ${monthlyMetrics.monthlyCloseChangePercent?.toFixed(2)}%
+    Distance from 52-Week High: ${monthlyMetrics.highVs52WeekHigh?.toFixed(2)}%
+    Distance from 52-Week Low: ${monthlyMetrics.lowVs52WeekLow?.toFixed(2)}%
+  `;
+}

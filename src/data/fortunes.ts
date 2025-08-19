@@ -1,10 +1,15 @@
 import { getStockPricesDaily } from "../db/queries/daily-prices";
+import { getInstrument } from "../db/queries/instruments";
+import { getStockPricesMonthly } from "../db/queries/monthly-prices";
 import { getStockPricesWeekly } from "../db/queries/weekly-prices";
 import { type StockPricesDaily, type StockPricesWeekly } from "../db/schema";
 import {
   calcDailyCloseChangePercent,
   calcDailyCloseVolatility,
+  calcHighVs52WeekHigh,
   calcIntradayRange,
+  calcLowVs52WeekLow,
+  calcMonthlyCloseChangePercent,
   calcOpenCloseChangePercent,
   calcTodayAverageVs30DayAverage,
   calcWeeklyCloseChangePercent,
@@ -12,6 +17,7 @@ import {
   calcWeeklyVolatility,
   calcWeeklyVolumeVs12WeekAverage,
   formatDailyPrompt,
+  formatMonthlyPrompt,
   formatWeeklyPrompt,
 } from "./calculations";
 
@@ -32,6 +38,10 @@ export async function createFortunePrompt(symbol: string) {
   const weeklyMetrics = await calculateWeeklyMetrics(symbol);
   const weeklyPrompt = formatWeeklyPrompt(weeklyMetrics);
   console.log(weeklyPrompt);
+
+  const monthlyMetrics = await calculateMonthlyMetrics(symbol);
+  const monthlyPrompt = formatMonthlyPrompt(monthlyMetrics);
+  console.log(monthlyPrompt);
 }
 
 async function calculateDailyMetrics(symbol: string) {
@@ -68,8 +78,8 @@ async function calculateDailyMetrics(symbol: string) {
 async function calculateWeeklyMetrics(symbol: string) {
   const weeklyQuotes = await getStockPricesWeekly(symbol);
 
-  const thisWeekClose = weeklyQuotes[0]?.close;
-  const lastWeekClose = weeklyQuotes[1]?.close;
+  const thisWeekClose = weeklyQuotes[1]?.close;
+  const lastWeekClose = weeklyQuotes[2]?.close;
 
   const weeklyCloseChangePercent = calcWeeklyCloseChangePercent(
     thisWeekClose,
@@ -77,14 +87,35 @@ async function calculateWeeklyMetrics(symbol: string) {
   );
   const weeklyCloseStreak = calcWeeklyCloseStreak(weeklyQuotes);
   const weeklyVolatility = calcWeeklyVolatility(weeklyQuotes);
-  const weeklyVolumeVs12WeekAverage = calcWeeklyVolumeVs12WeekAverage(weeklyQuotes);
+  const weeklyVolumeVs12WeekAverage =
+    calcWeeklyVolumeVs12WeekAverage(weeklyQuotes);
 
   return {
     weeklyCloseChangePercent: weeklyCloseChangePercent,
     weeklyCloseStreak: weeklyCloseStreak,
     weeklyVolatility: weeklyVolatility,
     weeklyVolumeVs12WeekAverage: weeklyVolumeVs12WeekAverage,
-  }
+  };
+}
+
+async function calculateMonthlyMetrics(symbol: string) {
+  const monthlyQuotes = await getStockPricesMonthly(symbol);
+  const metaData = await getInstrument(symbol);
+
+  const thisMonthClose = monthlyQuotes[1]?.close;
+  const lastMonthClose = monthlyQuotes[2]?.close;
+  const fiftyTwoWeekHigh = metaData?.fiftyTwoWeekHigh;
+  const fiftyTwoWeekLow = metaData?.fiftyTwoWeekLow;
+
+  const monthlyCloseChangePercent = calcMonthlyCloseChangePercent(thisMonthClose, lastMonthClose);
+  const highVs52WeekHigh = calcHighVs52WeekHigh(thisMonthClose, fiftyTwoWeekHigh);
+  const lowVs52WeekLow = calcLowVs52WeekLow(thisMonthClose, fiftyTwoWeekLow);
+
+  return {
+    monthlyCloseChangePercent: monthlyCloseChangePercent,
+    highVs52WeekHigh: highVs52WeekHigh,
+    lowVs52WeekLow: lowVs52WeekLow,
+  };
 }
 
 await createFortunePrompt("AAPL");

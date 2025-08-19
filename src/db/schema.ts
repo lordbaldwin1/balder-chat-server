@@ -1,4 +1,14 @@
-import { pgTable, text, boolean, timestamp, real, serial, integer, bigint } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  boolean,
+  timestamp,
+  real,
+  serial,
+  integer,
+  bigint,
+  unique,
+} from "drizzle-orm/pg-core";
 
 export const instruments = pgTable("instruments", {
   symbol: text("symbol").primaryKey(),
@@ -26,56 +36,70 @@ export const instruments = pgTable("instruments", {
   postMarketStart: timestamp("post_market_start"),
   postMarketEnd: timestamp("post_market_end"),
   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 export type Instrument = typeof instruments.$inferSelect;
 export type NewInstrument = typeof instruments.$inferInsert;
 
-export const stockPricesDaily = pgTable("stock_prices_daily", {
-  id: serial("id").primaryKey(),
-  symbol: text("symbol").references(() => instruments.symbol),
-  date: timestamp("date").notNull(),
-  high: real("high"),
-  volume: bigint("volume", { mode: "number" }),
-  open: real("open"),
-  low: real("low"),
-  close: real("close"),
-  adjclose: real("adj_close"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+export const stockPricesDaily = pgTable(
+  "stock_prices_daily",
+  {
+    id: serial("id").primaryKey(),
+    symbol: text("symbol").references(() => instruments.symbol),
+    date: timestamp("date").notNull(),
+    high: real("high"),
+    volume: bigint("volume", { mode: "number" }),
+    open: real("open"),
+    low: real("low"),
+    close: real("close"),
+    adjclose: real("adj_close"),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (table) => [unique().on(table.symbol, table.date)]
+);
 
 export type NewStockPricesDaily = typeof stockPricesDaily.$inferInsert;
 export type StockPricesDaily = typeof stockPricesDaily.$inferSelect;
 
-export const stockPricesWeekly = pgTable("stock_prices_weekly", {
-  id: serial("id").primaryKey(),
-  symbol: text("symbol").references(() => instruments.symbol),
-  date: timestamp("date").notNull(),
-  high: real("high"),
-  volume: bigint("volume", { mode: "number" }),
-  open: real("open"),
-  low: real("low"),
-  close: real("close"),
-  adjclose: real("adj_close"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+export const stockPricesWeekly = pgTable(
+  "stock_prices_weekly",
+  {
+    id: serial("id").primaryKey(),
+    symbol: text("symbol").references(() => instruments.symbol),
+    date: timestamp("date").notNull(),
+    high: real("high"),
+    volume: bigint("volume", { mode: "number" }),
+    open: real("open"),
+    low: real("low"),
+    close: real("close"),
+    adjclose: real("adj_close"),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (table) => [unique().on(table.symbol, table.date)]
+);
 
 export type NewStockPricesWeekly = typeof stockPricesWeekly.$inferInsert;
 export type StockPricesWeekly = typeof stockPricesWeekly.$inferSelect;
 
-export const stockPricesMonthly = pgTable("stock_prices_monthly", {
-  id: serial("id").primaryKey(),
-  symbol: text("symbol").references(() => instruments.symbol),
-  date: timestamp("date").notNull(),
-  high: real("high"),
-  volume: bigint("volume", { mode: "number" }),
-  open: real("open"),
-  low: real("low"),
-  close: real("close"),
-  adjclose: real("adj_close"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+export const stockPricesMonthly = pgTable(
+  "stock_prices_monthly",
+  {
+    id: serial("id").primaryKey(),
+    symbol: text("symbol").references(() => instruments.symbol),
+    date: timestamp("date").notNull(),
+    high: real("high"),
+    volume: bigint("volume", { mode: "number" }),
+    open: real("open"),
+    low: real("low"),
+    close: real("close"),
+    adjclose: real("adj_close"),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (table) => [unique().on(table.symbol, table.date)]
+);
 
 export type NewStockPricesMonthly = typeof stockPricesMonthly.$inferInsert;
 export type StockPricesMonthly = typeof stockPricesMonthly.$inferSelect;

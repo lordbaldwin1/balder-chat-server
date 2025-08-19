@@ -131,3 +131,5 @@ async function getMonthlyStockPricesPastYear() {
     }
   }
 }
+
+await gatherPastYearStockPricesDailyWeeklyMonthly();
