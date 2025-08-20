@@ -4,6 +4,8 @@ type Config = {
   platform: string;
   dbURL: string;
   geminiAPIKey: string;
+  jwtDefaultDuration: number;
+  jwtSecret: string;
 }
 
 export const config: Config = {
@@ -12,6 +14,8 @@ export const config: Config = {
   platform: envOrThrow("PLATFORM"),
   dbURL: envOrThrow("DATABASE_URL"),
   geminiAPIKey: envOrThrow("GEMINI_API_KEY"),
+  jwtDefaultDuration: 60*60,
+  jwtSecret: envOrThrow("JWT_SECRET"),
 }
 
 function envOrThrow(key: string) {

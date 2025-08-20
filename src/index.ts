@@ -1,7 +1,6 @@
 import express, { json } from "express";
 import { config } from "./config";
-import { middlewareErrorHandler } from "./middleware";
-import { gatherPastYearStockPricesDailyWeeklyMonthly } from "./data/quotes";
+import { middlewareErrorHandler } from "./api/middleware";
 import cron from "node-cron";
 import { gatherStockDataDaily } from "./data/cron";
 import { globalStockState, initGlobalStockState } from "./state";
