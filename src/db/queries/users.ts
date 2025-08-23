@@ -35,3 +35,11 @@ export async function updateUserCredentials(userId: string, email: string, hashe
     .returning();
   return result;
 }
+
+export async function getUserByID(id: string) {
+  const [res] = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, id));
+  return res;
+}

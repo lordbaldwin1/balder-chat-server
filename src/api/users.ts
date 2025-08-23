@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import {
   createUser,
   getUserByEmail,
+  getUserByID,
   updateUserCredentials,
 } from "../db/queries/users.js";
 import { BadRequestError, NotFoundError, UnauthorizedError } from "./errors.js";
@@ -14,11 +15,10 @@ import {
   makeRefreshToken,
   validateJWT,
 } from "../auth.js";
-import { config } from "../config.js";
+import { config, FIFTEEN_MINUTES, SEVEN_DAYS } from "../config.js";
 import { getUserByRefreshToken, revokeRefreshToken, saveRefreshToken } from "../db/queries/refresh-tokens";
 
 type UserResponse = Omit<User, "hashedPassword">;
-type LoginResponse = UserResponse & { token: string; refreshToken: string };
 const ONE_HOUR = 60 * 60;
 
 export async function handlerUsersCreate(req: Request, res: Response) {
@@ -38,7 +38,7 @@ export async function handlerUsersCreate(req: Request, res: Response) {
     hashedPassword: params.password,
   });
   if (!user) {
-    throw new Error("Could not create user");
+    throw new Error("Could not create user, does this user already exist?");
   }
 
   res.header("Content-Type", "application/json");
@@ -74,40 +74,72 @@ export async function handlerLogin(req: Request, res: Response) {
     throw new UnauthorizedError("No refresh token");
   }
 
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: config.platform === "production",
+    sameSite: "strict",
+    maxAge: SEVEN_DAYS,
+    path: "/",
+  });
+  res.cookie("accessToken", token, {
+    httpOnly: true,
+    secure: config.platform === "production",
+    sameSite: "strict",
+    maxAge: FIFTEEN_MINUTES,
+    path: "/",
+  })
+
   res.header("Content-Type", "application/json");
-  const response: LoginResponse = {
+  const response: UserResponse = {
     id: user.id,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
     email: user.email,
-    token: token,
-    refreshToken: refreshToken,
   };
   res.status(200).send(JSON.stringify(response));
 }
 
 export async function handlerRefreshJWT(req: Request, res: Response) {
-  const refreshToken = getBearerToken(req);
+  const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
     throw new BadRequestError("No refresh token");
   }
+
   const result = await getUserByRefreshToken(refreshToken);
-  if (!result) {
-    throw new UnauthorizedError("User not authenticated");
+  if (!result?.user) {
+    res.clearCookie("refreshToken", {
+      path: "/",
+    });
+    throw new UnauthorizedError("User not found");
   }
 
   const user = result.user;
   const newAccessToken = makeJWT(user.id, config.jwtSecret, config.jwtDefaultDuration);
   res.set("Content-Type", "application/json");
-  res.status(200).send({ token: newAccessToken });
+  res.cookie("accessToken", newAccessToken, {
+    httpOnly: true,
+    secure: config.platform === "production",
+    sameSite: "strict",
+    maxAge: FIFTEEN_MINUTES,
+    path: "/",
+  })
+  res.status(200).end();
 }
 
 export async function handlerRevokeRefreshToken(req: Request, res: Response) {
-  const refreshToken = getBearerToken(req);
+  const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
     throw new BadRequestError("No refresh token to revoke");
   }
   await revokeRefreshToken(refreshToken);
+
+  res.clearCookie("refreshToken", {
+    path: "/"
+  });
+
+  res.clearCookie("accessToken", {
+    path: "/",
+  })
   res.status(204).send();
 }
 
@@ -140,5 +172,31 @@ export async function handlerUpdateCredentials(req: Request, res: Response) {
     createdAt: updatedUser.createdAt,
   }
   res.set("Content-Type", "application/json");
+  res.status(200).send(JSON.stringify(body));
+}
+
+export async function handlerGetUser(req: Request, res: Response) {
+  const token = req.cookies.accessToken;
+  if (!token) {
+    throw new UnauthorizedError("No token in authorization header");
+  }
+
+  const userID = validateJWT(token, config.jwtSecret);
+  if (!userID) {
+    throw new UnauthorizedError("Invalid JWT");
+  }
+
+  const user = await getUserByID(userID);
+  if (!user) {
+    console.log("here");
+    throw new Error("User does not exist");
+  }
+
+  const body: UserResponse = {
+    id: userID,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+    email: user.email,
+  }
   res.status(200).send(JSON.stringify(body));
 }

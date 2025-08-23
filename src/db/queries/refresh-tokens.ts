@@ -1,4 +1,4 @@
-import { config } from "../../config.js";
+import { config, SEVEN_DAYS } from "../../config.js";
 import { db } from "../index.js";
 import { refreshTokens, users } from "../schema.js";
 import { and, eq, gt, isNull } from "drizzle-orm";
@@ -10,7 +10,7 @@ export async function saveRefreshToken(userID: string, token: string) {
     .values({
       userId: userID,
       token: token,
-      expiresAt: new Date(Date.now() + config.jwtDefaultDuration),
+      expiresAt: new Date(Date.now() + SEVEN_DAYS),
       revokedAt: null,
     })
     .returning();
@@ -23,14 +23,15 @@ export async function revokeRefreshToken(token: string) {
     .update(refreshTokens)
     .set({
       revokedAt: new Date()
-    });
+    })
+    .where(eq(refreshTokens.token, token));
 }
 
-export async function getUserByRefreshToken(token: string) {
+export async function getUserByRefreshToken(token: string) { 
   const [result] = await db
     .select({ user: users })
     .from(users)
-    .innerJoin(refreshTokens, eq(users.id, refreshTokens.userId))
+    .fullJoin(refreshTokens, eq(users.id, refreshTokens.userId))
     .where(
       and(
         eq(refreshTokens.token, token),
