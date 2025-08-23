@@ -47,6 +47,9 @@ export async function handlerGenerateFortune(req: Request, res: Response) {
   }
 
   const userID = validateJWT(accessToken, config.jwtSecret);
+  if (!userID) {
+    throw new UnauthorizedError("You must log in.");
+  }
 
   const stockData = globalStockState[params.symbol];
   if (!stockData) {
