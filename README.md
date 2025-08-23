@@ -8,7 +8,8 @@
 - [x] Add cron jobs to gather data daily, weekly, and monthly!
 - [x] Add global prompt state, initialize, and update on cron job
 - [x] Add auth
-- [ ] Change auth so that instead of returning the access/refresh tokens, it instead sets the cookie header accessToken and refreshToken. If access token expired, server will respond with 401. Client needs to check for 401 and then hit refresh endpoint for new token.
+- [x] Change auth to cookies
+- [ ] Are there more unit tests we can do?
 - [ ] add handler for fortune generation w/ gemini api
 - [ ] make frontend
 - [ ] profit?
