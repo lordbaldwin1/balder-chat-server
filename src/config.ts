@@ -6,6 +6,7 @@ type Config = {
   geminiAPIKey: string;
   jwtDefaultDuration: number;
   jwtSecret: string;
+  clientURL: string;
 }
 
 export const config: Config = {
@@ -16,6 +17,7 @@ export const config: Config = {
   geminiAPIKey: envOrThrow("GEMINI_API_KEY"),
   jwtDefaultDuration: 60*60,
   jwtSecret: envOrThrow("JWT_SECRET"),
+  clientURL: envOrThrow("CLIENT_URL"),
 }
 
 function envOrThrow(key: string) {

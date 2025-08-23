@@ -16,15 +16,14 @@ import {
 } from "./api/users";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
-const allowedOrigins = ["http://localhost:5173"];
+import { handlerGenerateFortune, handlerGetSymbols } from "./api/fortunes";
 
 const app = express();
 
 app.use(json());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: config.clientURL,
     credentials: true,
   })
 );
@@ -37,6 +36,7 @@ app.post("/api/users/create", (req, res, next) => {
 app.post("/api/users/login", (req, res, next) => {
   Promise.resolve(handlerLogin(req, res).catch(next));
 });
+// change endpoint to /api/users/auth?
 app.get("/api/users", (req, res, next) => {
   Promise.resolve(handlerGetUser(req, res).catch(next));
 });
@@ -45,6 +45,12 @@ app.post("/api/users/refresh", (req, res, next) => {
 });
 app.post("/api/users/logout", (req, res, next) => {
   Promise.resolve(handlerRevokeRefreshToken(req, res).catch(next));
+});
+app.post("/api/fortunes", (req, res, next) => {
+  Promise.resolve(handlerGenerateFortune(req, res).catch(next));
+});
+app.get("/api/instruments", (req, res, next) => {
+  Promise.resolve(handlerGetSymbols(req, res).catch(next));
 });
 
 app.use(middlewareErrorHandler);

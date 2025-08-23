@@ -24,6 +24,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@google/genai": "^1.15.0",
     "@types/pg": "^8.15.5",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",

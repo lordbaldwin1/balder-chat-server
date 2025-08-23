@@ -137,3 +137,16 @@ export const refreshTokens = pgTable("refresh_tokens", {
 
 export type NewRefreshToken = typeof refreshTokens.$inferInsert;
 export type RefreshToken = typeof refreshTokens.$inferSelect;
+
+export const fortunes = pgTable("fortunes", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  symbol: text("symbol").notNull(),
+  body: text("body").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+});
+
+export type NewFortune = typeof fortunes.$inferInsert;
+export type Fortune = typeof fortunes.$inferSelect;

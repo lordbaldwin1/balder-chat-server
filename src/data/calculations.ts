@@ -6,7 +6,7 @@ export function calcDailyCloseChangePercent(
   yesterdaysClose: number | null | undefined
 ) {
   return todaysClose && yesterdaysClose
-    ? Math.round(((todaysClose - yesterdaysClose) / yesterdaysClose) * 100  * 100) / 100 // ROUND 2 DECIMAL PLACES
+    ? Math.round(((todaysClose - yesterdaysClose) / yesterdaysClose) * 100  * 100) / 100
     : undefined;
 }
 
