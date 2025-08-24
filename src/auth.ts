@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs"
 import jwt, { type JwtPayload } from "jsonwebtoken"
 import { BadRequestError, UnauthorizedError } from "./api/errors.js";
 import { type Request } from "express";
