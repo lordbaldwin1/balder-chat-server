@@ -177,8 +177,11 @@ export async function handlerUpdateCredentials(req: Request, res: Response) {
 
 export async function handlerGetUser(req: Request, res: Response) {
   const token = req.cookies.accessToken;
-  if (!token) {
-    throw new UnauthorizedError("No token in cookies");
+  const refreshToken = req.cookies.refreshToken;
+  
+  if (!token && !refreshToken) {
+    res.status(200).json(null);
+    return;
   }
 
   const userID = validateJWT(token, config.jwtSecret);
