@@ -45,7 +45,7 @@ async function getDailyStockPricesPastYear() {
     for (const quote of quotes) {
       const savedSymbol = await createStockPriceDaily({
         symbol: symbol.symbol,
-        date: quote.date,
+        date: new Date(quote.date),
         high: quote.high,
         volume: quote.volume,
         open: quote.open,

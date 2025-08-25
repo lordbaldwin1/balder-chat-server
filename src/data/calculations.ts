@@ -70,13 +70,11 @@ export function calcTodayAverageVs30DayAverage(
 export function formatDailyPrompt(d: DailyMetrics) {
   return `
     Symbol: ${d.symbol}
-    Daily % change: ${d.dailyCloseChangePercent?.toFixed(2)}%
-    Open/close % change: ${d.openCloseChangePercent?.toFixed(2)}%
-    Average daily % change (volatility): ${d.closeVolatilityPercent?.toFixed(
-      2
-    )}%
-    Intraday Range: ${d.intradayRange?.toFixed(2)}%
-    Today Volume / 30 day average volume: ${d.todayVolumeVsAverage?.toFixed(2)}x
+    Daily Close Change: ${d.dailyCloseChangePercent?.toFixed(2)}%
+    Intraday Open/Close Change: ${d.openCloseChangePercent?.toFixed(2)}%
+    Daily Volatility (Avg Close Change): ${d.closeVolatilityPercent?.toFixed(2)}%
+    Intraday Range (High-Low): ${d.intradayRange?.toFixed(2)}%
+    Volume vs 30-Day Average: ${d.todayVolumeVsAverage?.toFixed(2)}x
     `;
 }
 
@@ -183,7 +181,7 @@ export function formatWeeklyPrompt(weeklyMetrics: {
   return `
     Weekly Close Change: ${weeklyMetrics.weeklyCloseChangePercent?.toFixed(2)}%
     Weekly Streak: ${weeklyMetrics.weeklyCloseStreak} weeks ${streakDirection}
-    Weekly Volatility: ${weeklyMetrics.weeklyVolatility?.toFixed(2)}%
+    Weekly Volatility (High-Low Range): ${weeklyMetrics.weeklyVolatility?.toFixed(2)}%
     Volume vs 12-Week Average: ${weeklyMetrics.weeklyVolumeVs12WeekAverage?.toFixed(2)}x
   `;
 }

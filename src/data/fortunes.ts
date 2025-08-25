@@ -2,7 +2,7 @@ import { getStockPricesDaily } from "../db/queries/daily-prices";
 import { getInstrument } from "../db/queries/instruments";
 import { getStockPricesMonthly } from "../db/queries/monthly-prices";
 import { getStockPricesWeekly } from "../db/queries/weekly-prices";
-import { type StockPricesDaily, type StockPricesWeekly } from "../db/schema";
+import { type StockPricesDaily } from "../db/schema";
 import {
   calcDailyCloseChangePercent,
   calcDailyCloseVolatility,
@@ -49,6 +49,12 @@ async function calculateDailyMetrics(symbol: string) {
     throw new Error("UH OH, WE DON'T GOT ENOUGH QUOTES TO MAKE A FORTUNE!");
   }
 
+  console.log('First 3 daily quotes:');
+  dailyQuotes.slice(0, 6).forEach((quote, i) => {
+    console.log(`[${i}] Date: ${quote.date}, Close: ${quote.close}`);
+  });
+  
+
   const todaysClose = dailyQuotes[0]?.close;
   const yesterdaysClose = dailyQuotes[1]?.close;
   const todaysOpen = dailyQuotes[0]?.open;
@@ -73,6 +79,7 @@ async function calculateDailyMetrics(symbol: string) {
     todayVolumeVsAverage: todayVolumeVsAverage,
   } satisfies DailyMetrics;
 }
+
 
 async function calculateWeeklyMetrics(symbol: string) {
   const weeklyQuotes = await getStockPricesWeekly(symbol);
@@ -122,5 +129,3 @@ async function calculateMonthlyMetrics(symbol: string) {
     lowVs52WeekLow: lowVs52WeekLow,
   };
 }
-
-await createFortunePrompt("AAPL");

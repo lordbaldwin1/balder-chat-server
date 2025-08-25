@@ -142,6 +142,7 @@ export const fortunes = pgTable("fortunes", {
   id: uuid("id").primaryKey().defaultRandom(),
   symbol: text("symbol").notNull(),
   body: text("body").notNull(),
+  stockData: text("stock_data"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   userId: uuid("user_id")
     .notNull()

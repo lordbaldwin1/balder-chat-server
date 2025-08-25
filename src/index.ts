@@ -66,7 +66,10 @@ cron.schedule("45 13 * * *", async () => {
 const server = app.listen(config.port, async () => {
   console.log(`Server listening on ${config.baseURL}${config.port}`);
 
+  console.log("gathering todays stocks");
+  await gatherStockDataDaily();
   console.log("Initializing stock state");
   await initGlobalStockState(globalStockState);
   console.log("Stock state initialized, fortunes are ready to be told.");
+
 });

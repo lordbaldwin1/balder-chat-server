@@ -64,10 +64,11 @@ export async function handlerGenerateFortune(req: Request, res: Response) {
       userId: userID,
       symbol: params.symbol,
       body: fortune,
+      stockData: stockData,
     });
     
     console.log("Fortune saved:", savedFortune);
-    res.status(200).send({ fortune: fortune });
+    res.status(200).send({ fortune: fortune, data: stockData });
   } catch (err: unknown) {
     if (err instanceof Error) {
       throw new Error(err.message);
