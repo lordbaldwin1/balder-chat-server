@@ -49,5 +49,5 @@ export const instruments = [
   "AGG",     // iShares Core U.S. Aggregate Bond ETF
   "DIA",     // SPDR Dow Jones Industrial Average ETF
   "XLF",     // Financial Select Sector SPDR Fund
-  "XLK"      // Technology Select Sector SPDR Fund
+  "XLK",     // Technology Select Sector SPDR Fund
 ]

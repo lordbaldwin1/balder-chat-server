@@ -16,7 +16,7 @@ import {
 } from "./api/users";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { handlerGenerateFortune, handlerGetSymbols } from "./api/fortunes";
+import { handlerGenerateFortune, handlerGetFortunesForUser, handlerGetSymbols } from "./api/fortunes";
 
 const app = express();
 
@@ -49,6 +49,9 @@ app.post("/api/users/logout", (req, res, next) => {
 app.post("/api/fortunes", (req, res, next) => {
   Promise.resolve(handlerGenerateFortune(req, res).catch(next));
 });
+app.get("/api/fortunes/:userID", (req, res, next) => {
+  Promise.resolve(handlerGetFortunesForUser(req, res).catch(next));
+});
 app.get("/api/instruments", (req, res, next) => {
   Promise.resolve(handlerGetSymbols(req, res).catch(next));
 });
@@ -66,10 +69,7 @@ cron.schedule("45 13 * * *", async () => {
 const server = app.listen(config.port, async () => {
   console.log(`Server listening on ${config.baseURL}${config.port}`);
 
-  console.log("gathering todays stocks");
-  await gatherStockDataDaily();
   console.log("Initializing stock state");
   await initGlobalStockState(globalStockState);
   console.log("Stock state initialized, fortunes are ready to be told.");
-
 });

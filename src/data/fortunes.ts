@@ -47,13 +47,7 @@ async function calculateDailyMetrics(symbol: string) {
   const dailyQuotes: StockPricesDaily[] = await getStockPricesDaily(symbol);
   if (dailyQuotes.length < 2) {
     throw new Error("UH OH, WE DON'T GOT ENOUGH QUOTES TO MAKE A FORTUNE!");
-  }
-
-  console.log('First 3 daily quotes:');
-  dailyQuotes.slice(0, 6).forEach((quote, i) => {
-    console.log(`[${i}] Date: ${quote.date}, Close: ${quote.close}`);
-  });
-  
+  }  
 
   const todaysClose = dailyQuotes[0]?.close;
   const yesterdaysClose = dailyQuotes[1]?.close;

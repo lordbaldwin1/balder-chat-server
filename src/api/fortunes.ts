@@ -4,7 +4,7 @@ import { validateJWT } from "../auth";
 import { config } from "../config";
 import { BadRequestError, UnauthorizedError } from "./errors";
 import { globalStockState } from "../state";
-import { saveFortune } from "../db/queries/fortunes";
+import { getFortunesByUserID, saveFortune } from "../db/queries/fortunes";
 import { getSymbols } from "../db/queries/instruments";
 
 const ai = new GoogleGenAI({});
@@ -95,5 +95,16 @@ function createPrompt(stockData: string) {
   Stock Data:
   ${stockData}
   `;
+}
+
+export async function handlerGetFortunesForUser(req: Request, res: Response) {
+  const { userID } = req.params;
+  if (!userID) {
+    throw new BadRequestError("Missing userID!");
+  }
+
+  const fortunes = await getFortunesByUserID(userID);
+
+  res.status(200).send(fortunes);
 }
 
