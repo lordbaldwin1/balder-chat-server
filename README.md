@@ -1,19 +1,3 @@
-# fin-fortune
-
-## TODO
-- [x] Extract out calculations into unit testable functions
-- [x] Write unit tests for daily calculations
-- [x] Finish computations/prompts for weekly/monthly data
-- [x] Add unit tests for weekly/monthly data
-- [x] Add cron jobs to gather data daily, weekly, and monthly!
-- [x] Add global prompt state, initialize, and update on cron job
-- [x] Add auth
-- [x] Change auth to cookies
-- [x] Are there more unit tests we can do?
-- [x] add handler for fortune generation w/ gemini api
-- [x] make frontend
-- [x] profit?
-
 To install dependencies:
 
 ```bash
