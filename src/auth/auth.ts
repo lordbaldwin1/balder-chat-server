@@ -1,11 +1,11 @@
 import bcrypt from "bcryptjs"
 import jwt, { type JwtPayload } from "jsonwebtoken"
-import { BadRequestError, UnauthorizedError } from "./api/errors.js";
+import { UnauthorizedError } from "../api/errors.js";
 import { type Request } from "express";
 import { randomBytes } from "node:crypto";
 
 const ONE_HOUR = 60*60;
-const TOKEN_ISSUER = "fortune-teller";
+const TOKEN_ISSUER = "balder-chat";
 type payload = Pick<JwtPayload, "iss" | "sub" | "iat" | "exp">;
 
 export async function hashPassword(password: string) {
