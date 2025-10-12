@@ -1,11 +1,11 @@
 import type { Request, Response } from "express";
-import { insertUserIntoDB, selectUserByID } from "../db/queries/queries";
+import { insertUser, selectUserByID } from "../db/queries/queries";
 import type { NewUser, User } from "../db/schema";
 import { config, SEVEN_DAYS } from "../config";
 import { NotFoundError } from "./errors";
 
 export async function handlerUsersCreate(_: Request, res: Response) {
-    const user = await insertUserIntoDB({
+    const user = await insertUser({
         username: "anon" + String(Math.floor((Math.random() * 10000))),
     } satisfies NewUser);
     if (!user) {

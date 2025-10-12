@@ -1,3 +1,7 @@
+import type { ServerWebSocket } from "bun";
+import type WebSocket from "ws";
+import z from "zod";
+
 type Config = {
   baseURL: string;
   port: string;
@@ -28,3 +32,27 @@ function envOrThrow(key: string) {
 
 export const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
 export const FIFTEEN_MINUTES = 15 * 60 * 1000;
+
+type Connection = {
+  socket: WebSocket;
+  userID: string;
+  username: string;
+}
+
+type wssState = {
+  connections: Record<string, Connection>; // userID -> socket
+  rooms: Record<string, Set<string>>; // roomID -> set of userIDs
+}
+
+export const wsServerState: wssState = {
+  connections: {},
+  rooms: {},
+}
+
+export const wsMessageSchema = z.object({
+  type: z.enum(["chat", "join", "leave"]),
+  userID: z.string(),
+  roomID: z.string(),
+  content: z.string().optional(),
+});
+export type wsMessage = z.infer<typeof wsMessageSchema>;
