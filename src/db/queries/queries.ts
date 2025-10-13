@@ -16,3 +16,8 @@ export async function insertRoom(room: NewRoom) {
   const [res] = await db.insert(rooms).values(room).returning();
   return res;
 }
+
+export async function selectRooms() {
+    const rows = await db.select().from(rooms);
+    return rows;
+}

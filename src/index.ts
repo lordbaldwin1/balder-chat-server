@@ -1,5 +1,10 @@
 import express, { json } from "express";
-import { config, wsMessageSchema, wsServerState, type wsMessage } from "./config";
+import {
+  config,
+  wsMessageSchema,
+  wsServerState,
+  type wsMessage,
+} from "./config";
 import {
   middlewareErrorHandler,
   middlewareLogResponses,
@@ -13,6 +18,7 @@ import http from "http";
 import { WebSocketServer } from "ws";
 import { selectUserByID } from "./db/queries/queries";
 import { z } from "zod";
+import { handlerRoomsCreate, handlerRoomsGet } from "./api/rooms";
 
 const app = express();
 
@@ -31,6 +37,12 @@ app.post("/api/users/create", (req, res, next) => {
 });
 app.get("/api/users", (req, res, next) => {
   Promise.resolve(handlerGetUser(req, res).catch(next));
+});
+app.post("/api/rooms/create", (req, res, next) => {
+  Promise.resolve(handlerRoomsCreate(req, res).catch(next));
+});
+app.get("/api/rooms", (req, res, next) => {
+  Promise.resolve(handlerRoomsGet(req, res).catch(next));
 });
 
 app.use(middlewareErrorHandler);
