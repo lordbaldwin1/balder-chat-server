@@ -50,9 +50,10 @@ export const wsServerState: wssState = {
 }
 
 export const wsMessageSchema = z.object({
-  type: z.enum(["chat", "join", "leave"]),
   userID: z.string(),
+  username: z.string(),
   roomID: z.string(),
-  content: z.string().optional(),
+  content: z.string(),
+  timestamp: z.coerce.date(),
 });
 export type wsMessage = z.infer<typeof wsMessageSchema>;
